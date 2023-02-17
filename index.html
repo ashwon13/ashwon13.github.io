@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module Lab2Question3</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Lab2Question3</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:g%3A%5Cmy%20drive%5Cai%5Cprobability%5Clab2question3.py">g:\my drive\ai\probability\lab2question3.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="csv.html">csv</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-get_prob"><strong>get_prob</strong></a>(prob_table: list, state: dict, given: dict = None) -&gt; float</dt><dd><tt>Return&nbsp;the&nbsp;probability&nbsp;P(state_i=value_i)&nbsp;with&nbsp;givens&nbsp;state_i=value_i<br>
+:param&nbsp;prob_table:&nbsp;probability&nbsp;table&nbsp;generated&nbsp;from&nbsp;the&nbsp;program<br>
+:param&nbsp;state:&nbsp;{index&nbsp;of&nbsp;state:&nbsp;value}&nbsp;for&nbsp;every&nbsp;value&nbsp;in&nbsp;the&nbsp;goal&nbsp;state<br>
+:param&nbsp;given:&nbsp;{index&nbsp;of&nbsp;state:&nbsp;value}&nbsp;for&nbsp;every&nbsp;value&nbsp;in&nbsp;the&nbsp;given<br>
+:return:&nbsp;the&nbsp;probability&nbsp;of&nbsp;the&nbsp;states&nbsp;with&nbsp;the&nbsp;givens</tt></dd></dl>
+ <dl><dt><a name="-p"><strong>p</strong></a>(z: str, g: &lt;built-in function bin&gt;) -&gt; float</dt><dd><tt>Calculates&nbsp;the&nbsp;probability&nbsp;of&nbsp;a&nbsp;node&nbsp;occurring&nbsp;(or&nbsp;its&nbsp;inverse)<br>
+:param&nbsp;z:&nbsp;P(Action=True)<br>
+:param&nbsp;g:&nbsp;Trigger&nbsp;P(~Action);&nbsp;1=P(Action=True);&nbsp;0=P(Action=False)<br>
+:return:&nbsp;fixed&nbsp;probability</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>a</strong> = '11111'<br>
+<strong>f</strong> = &lt;_io.TextIOWrapper name='inputs.csv' mode='r' encoding='cp1252'&gt;<br>
+<strong>prob_table</strong> = [('00000', 0.9367427006189999), ('00001', 0.009462047481), ('00010', 0.049302247401000004), ('00011', 0.0004980024990000001), ('00100', 2.9910059999999997e-05), ('00101', 6.979013999999998e-05), ('00110', 0.00026919054), ('00111', 0.0006281112599999999), ('01000', 0.00133417449), ('01001', 1.3476510000000001e-05), ('01010', 7.021971e-05), ('01011', 7.0929e-07), ('01100', 1.73826e-05), ('01101', 4.055939999999999e-05), ('01110', 0.00015644340000000003), ('01111', 0.0003650346), ('10000', 5.631714000000005e-05), ('10001', 5.688600000000004e-07), ('10010', 2.9640600000000024e-06), ('10011', 2.994000000000003e-08), ...]<br>
+<strong>probs</strong> = ['0.001', '0.002', '0.95', '0.94', '0.29', '0.001', '0.9', '0.05', '0.70', '0.01']<br>
+<strong>x</strong> = '11111'</td></tr></table>
+</body></html>
