@@ -1,49 +1,786 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><head><title>Python: module Lab2Question3</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head><body bgcolor="#f0f0f8">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Humanoid Robotics at Virginia Tech</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;600&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --maroon: #861F41;
+      --maroon-light: #a8274e;
+      --orange: #E5751F;
+      --dark: #06060c;
+      --dark2: #0d0d18;
+      --dark3: #13131f;
+      --panel: #0f0f1a;
+      --border: rgba(134,31,65,0.35);
+      --border-soft: rgba(255,255,255,0.06);
+      --text: #e8e8f0;
+      --muted: #7a7a95;
+      --white: #ffffff;
+      --green: #22c55e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; opacity: 0.4;
+    }
 
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
-<tr bgcolor="#7799ee">
-<td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Lab2Question3</strong></big></big></font></td
-><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:g%3A%5Cmy%20drive%5Cai%5Cprobability%5Clab2question3.py">g:\my drive\ai\probability\lab2question3.py</a></font></td></tr></table>
-    <p></p>
-<p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#aa55cc">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(6,6,12,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 14px; cursor: default; }
+    .nav-logo {
+      font-family: 'Orbitron', monospace; font-size: 0.78rem;
+      font-weight: 900; letter-spacing: 0.12em; color: var(--white); line-height: 1.25;
+    }
+    .nav-logo .sub { color: var(--maroon); font-size: 0.62rem; letter-spacing: 0.18em; display: block; font-weight: 400; }
+
+    /* VINYL LOGO */
+    .vinyl-wrap {
+      position: relative; width: 46px; height: 46px; flex-shrink: 0;
+      cursor: grab; user-select: none;
+    }
+    .vinyl-wrap:active { cursor: grabbing; }
+    .vinyl {
+      width: 100%; height: 100%; border-radius: 50%;
+      animation: vinylSpin 8s linear infinite;
+      animation-play-state: running;
+      position: relative;
+      overflow: hidden; /* Ensures the image stays circular */
+    }
+    .vinyl img { width: 100%; height: 100%; display: block; object-fit: cover; }
+    /* glow on hover */
+    .vinyl-wrap:hover .vinyl { filter: drop-shadow(0 0 8px rgba(229,117,31,0.5)); }
+    @keyframes vinylSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    nav ul { list-style: none; display: flex; gap: 36px; }
+    nav ul li a {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s;
+    }
+    nav ul li a:hover { color: var(--orange); }
+    .nav-cta {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--white);
+      border: 1px solid var(--maroon); padding: 8px 20px; text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--maroon); }
+
+    /* HERO */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; overflow: hidden; padding: 0 48px;
+    }
+    #hero::after {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(134,31,65,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(134,31,65,0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 760px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--orange);
+      border: 1px solid rgba(229,117,31,0.35); padding: 6px 14px; margin-bottom: 32px;
+      animation: fadeUp 0.7s ease both;
+    }
+    .live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 1.4s infinite; }
+    h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.4rem, 5.5vw, 5rem);
+      font-weight: 900; line-height: 0.97; letter-spacing: -0.02em; color: var(--white);
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    h1 .accent { color: var(--maroon); }
+    .hero-sub {
+      font-size: 1.05rem; font-weight: 300; color: var(--muted); margin-top: 28px;
+      max-width: 560px; line-height: 1.75; animation: fadeUp 0.7s 0.2s ease both;
+    }
+    .hero-actions { display: flex; gap: 16px; margin-top: 44px; animation: fadeUp 0.7s 0.3s ease both; }
+    .btn-primary {
+      background: var(--maroon); color: var(--white); font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 14px 32px;
+      text-decoration: none; border: 1px solid transparent; transition: background 0.2s, transform 0.2s; display: inline-block;
+    }
+    .btn-primary:hover { background: var(--maroon-light); transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent; color: var(--white); font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 14px 32px;
+      text-decoration: none; border: 1px solid rgba(255,255,255,0.18); transition: border-color 0.2s, color 0.2s, transform 0.2s; display: inline-block;
+    }
+    .btn-ghost:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-2px); }
+    .hero-status {
+      display: flex; align-items: center; gap: 10px; margin-top: 48px; padding: 14px 20px;
+      background: rgba(34,197,94,0.05); border: 1px solid rgba(34,197,94,0.2);
+      animation: fadeUp 0.7s 0.38s ease both; width: fit-content;
+    }
+    .status-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 1.4s infinite; }
+    .status-text { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--green); letter-spacing: 0.1em; }
+    .hero-stats { display: flex; gap: 48px; margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--border); animation: fadeUp 0.7s 0.45s ease both; }
+    .stat-num { font-family: 'Orbitron', monospace; font-size: 2rem; font-weight: 700; color: var(--white); }
+    .stat-num span { color: var(--maroon); }
+    .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+    .hero-robot {
+      position: absolute; right: -20px; bottom: 0; width: 480px;
+      opacity: 0.14; z-index: 1; animation: floatRobot 6s ease-in-out infinite;
+    }
+
+    /* SHARED */
+    section { position: relative; z-index: 1; }
+    .section-inner { max-width: 1100px; margin: 0 auto; padding: 120px 48px; }
+    .section-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--maroon); margin-bottom: 20px; }
+    .section-title { font-family: 'Orbitron', monospace; font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 700; color: var(--white); line-height: 1.15; }
+
+    /* ABOUT */
+    #about { background: var(--dark2); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 60px; align-items: start; }
+    .about-text p { color: var(--muted); font-size: 1rem; line-height: 1.85; margin-bottom: 20px; font-weight: 300; }
+    .about-text p strong { color: var(--text); font-weight: 600; }
+    .highlight-box { margin-top: 28px; padding: 20px 24px; border: 1px solid rgba(229,117,31,0.3); background: rgba(229,117,31,0.05); }
+    .highlight-box p { color: rgba(229,117,31,0.9) !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 0.8rem !important; line-height: 1.65 !important; margin-bottom: 0 !important; }
+    .subteams { display: flex; flex-direction: column; gap: 16px; }
+    .subteam { border: 1px solid var(--border); background: var(--panel); padding: 22px 26px; position: relative; overflow: hidden; transition: border-color 0.3s; }
+    .subteam:hover { border-color: var(--maroon); }
+    .subteam::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--maroon); }
+    .subteam-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .subteam-title { font-family: 'Orbitron', monospace; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; color: var(--white); }
+    .subteam-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange); border: 1px solid rgba(229,117,31,0.3); padding: 2px 8px; }
+    .subteam-desc { font-size: 0.87rem; color: var(--muted); line-height: 1.6; }
+
+    /* TIMELINE */
+    #timeline { background: var(--dark); border-top: 1px solid var(--border); }
+    .timeline-header { margin-bottom: 60px; }
+    .timeline-track { position: relative; padding-left: 40px; }
+    .timeline-track::before {
+      content: ''; position: absolute; left: 0; top: 8px; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, var(--maroon) 0%, rgba(134,31,65,0.08) 100%);
+    }
+    .timeline-entry { position: relative; padding-bottom: 50px; }
+    .timeline-entry:last-child { padding-bottom: 0; }
+    .timeline-entry::before {
+      content: ''; position: absolute; left: -46px; top: 6px; width: 14px; height: 14px;
+      border-radius: 50%; border: 2px solid var(--maroon); background: var(--dark); z-index: 2;
+    }
+    .timeline-entry.done::before { background: var(--maroon); }
+    .timeline-entry.wip::before { background: var(--orange); border-color: var(--orange); animation: pulseGlow 2s infinite; }
+    .timeline-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+    .timeline-date { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .tl-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 10px; }
+    .tl-badge.done { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+    .tl-badge.progress { background: rgba(229,117,31,0.1); color: var(--orange); border: 1px solid rgba(229,117,31,0.3); }
+    .tl-badge.upcoming { background: rgba(134,31,65,0.1); color: #d46080; border: 1px solid rgba(134,31,65,0.3); }
+    .timeline-card { background: var(--panel); border: 1px solid var(--border); padding: 28px 32px; transition: border-color 0.3s; }
+    .timeline-entry.wip .timeline-card { border-color: rgba(229,117,31,0.3); }
+    .timeline-card h3 { font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+    .timeline-card p { font-size: 0.92rem; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+    .timeline-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tl-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border-soft); padding: 3px 10px; }
+    .progress-bar-wrap { margin-top: 16px; border-top: 1px solid var(--border-soft); padding-top: 16px; }
+    .progress-bar-label { display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .progress-bar-track { height: 3px; background: rgba(255,255,255,0.06); position: relative; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--orange); position: relative; }
+    .progress-bar-fill::after { content: ''; position: absolute; right: 0; top: -2px; bottom: -2px; width: 2px; background: white; opacity: 0.8; animation: blink 1s infinite; }
+
+    /* PLATFORM */
+    #robot { background: var(--dark2); border-top: 1px solid var(--border); }
+    .robot-showcase { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: center; margin-top: 60px; }
+    .robot-diagram { background: var(--panel); border: 1px solid var(--border); padding: 40px; display: flex; justify-content: center; align-items: center; min-height: 400px; position: relative; overflow: hidden; }
+    .robot-diagram::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(134,31,65,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(134,31,65,0.05) 1px, transparent 1px); background-size: 24px 24px; }
+    .robot-specs { display: flex; flex-direction: column; gap: 22px; }
+    .spec-row { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); }
+    .spec-key { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .spec-val { font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 700; color: var(--white); }
+    .spec-val .unit { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--orange); margin-left: 4px; }
+    .spec-tbd { color: var(--muted) !important; font-size: 0.72rem !important; font-style: italic; font-family: 'IBM Plex Mono', monospace !important; font-weight: 400 !important; }
+
+    /* LEADERSHIP */
+    #team { background: var(--dark); }
+    .leadership-layout { margin-top: 60px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 64px; align-items: start; }
+    .president-card { background: var(--panel); border: 1px solid var(--border); padding: 36px; text-align: center; position: relative; overflow: hidden; }
+    .president-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--maroon), var(--orange)); }
+    .member-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--maroon) 0%, #2d0a17 100%); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', monospace; font-size: 1.3rem; font-weight: 700; color: rgba(255,255,255,0.85); border: 2px solid rgba(134,31,65,0.5); }
+    .member-name { font-family: 'Barlow', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+    .member-role { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange); }
+    .member-dept { font-size: 0.85rem; color: var(--muted); margin-top: 10px; }
+    .role-badge { display: inline-block; margin-top: 18px; background: rgba(134,31,65,0.15); border: 1px solid rgba(134,31,65,0.4); color: #d46080; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; }
+    .org-structure { display: flex; flex-direction: column; gap: 14px; }
+    .org-header { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .org-row { display: flex; align-items: flex-start; gap: 16px; border: 1px solid var(--border); background: var(--panel); padding: 18px 22px; transition: border-color 0.3s; }
+    .org-row:hover { border-color: var(--maroon); }
+    .org-row-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--maroon); margin-top: 6px; flex-shrink: 0; }
+    .org-row-title { font-family: 'Orbitron', monospace; font-size: 0.75rem; font-weight: 700; color: var(--white); margin-bottom: 5px; }
+    .org-row-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.55; }
+
+    /* JOIN */
+    #join { background: var(--dark2); border-top: 1px solid var(--border); }
+    .join-inner { max-width: 820px; margin: 0 auto; text-align: center; padding: 120px 48px; }
+    .join-inner .section-tag, .join-inner .section-title { text-align: center; }
+    .join-inner .section-title { margin-bottom: 24px; }
+    .join-inner > p { color: var(--muted); font-size: 1rem; line-height: 1.85; margin-bottom: 48px; font-weight: 300; }
+    .open-source-note { display: flex; align-items: flex-start; gap: 16px; background: rgba(229,117,31,0.05); border: 1px solid rgba(229,117,31,0.2); padding: 20px 24px; margin-bottom: 40px; text-align: left; }
+    .open-source-note .icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .open-source-note p { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; line-height: 1.65; color: rgba(229,117,31,0.85); }
+    .join-tracks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 48px; }
+    .track { border: 1px solid var(--border); padding: 20px 16px; background: var(--panel); transition: border-color 0.3s, transform 0.3s; }
+    .track:hover { border-color: var(--maroon); transform: translateY(-3px); }
+    .track-icon { font-size: 1.4rem; margin-bottom: 10px; }
+    .track-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); }
+
+    /* FOOTER */
+    footer { background: var(--dark); border-top: 1px solid var(--border); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
+    .footer-logo { font-family: 'Orbitron', monospace; font-size: 0.75rem; font-weight: 900; color: var(--white); }
+    .footer-logo .sub { color: var(--maroon); font-size: 0.58rem; display: block; letter-spacing: 0.15em; margin-top: 2px; font-weight: 400; }
+    .footer-copy { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--orange); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 8px rgba(229,117,31,0.4); } 50% { box-shadow: 0 0 20px rgba(229,117,31,0.8); } }
+    @keyframes floatRobot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+    @keyframes blink { 0%, 100% { opacity: 0.8; } 50% { opacity: 0; } }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-brand">
+      <div class="vinyl-wrap" id="vinylLogo" title="Give it a spin">
+        <div class="vinyl">
+           <img src="logo.jpg" alt="VT Robotics Circle Logo">
+        </div>
+      </div>
+      <div class="nav-logo">
+        HUMANOID ROBOTICS
+        <span class="sub">AT VIRGINIA TECH</span>
+      </div>
+    </div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#timeline">Progress</a></li>
+      <li><a href="#robot">Platform</a></li>
+      <li><a href="#team">Team</a></li>
+    </ul>
+    <a href="#join" class="nav-cta">Join Us</a>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="live-dot"></span>
+        Active — Blacksburg, Virginia
+      </div>
+      <h1>HUMANOID<br/><span class="accent">ROBOTICS</span><br/>AT VT</h1>
+      <p class="hero-sub">A student-led engineering design team building open-source bipedal humanoid robots — lowering the barrier to entry for the entire collegiate robotics community.</p>
+      <div class="hero-actions">
+        <a href="#about" class="btn-primary">Our Mission</a>
+        <a href="#timeline" class="btn-ghost">See Our Progress</a>
+      </div>
+      <div class="hero-status">
+        <div class="status-dot"></div>
+        <span class="status-text">Currently active — hardware design &amp; controls simulation underway</span>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">1<span>st</span></div>
+          <div class="stat-label">Robot in Dev</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">5<span>+</span></div>
+          <div class="stat-label">Sub-Teams</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100<span>%</span></div>
+          <div class="stat-label">Open Source</div>
+        </div>
+      </div>
+    </div>
+    <svg class="hero-robot" viewBox="0 0 300 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="100" y="20" width="100" height="90" rx="8" fill="#861F41"/>
+      <rect x="115" y="38" width="28" height="14" rx="3" fill="#E5751F" opacity="0.8"/>
+      <rect x="157" y="38" width="28" height="14" rx="3" fill="#E5751F" opacity="0.8"/>
+      <rect x="120" y="70" width="60" height="6" rx="3" fill="#E5751F" opacity="0.5"/>
+      <rect x="135" y="110" width="30" height="20" rx="4" fill="#6b1833"/>
+      <rect x="75" y="130" width="150" height="160" rx="10" fill="#861F41"/>
+      <rect x="95" y="150" width="110" height="80" rx="6" fill="#6b1833"/>
+      <rect x="108" y="162" width="36" height="36" rx="4" fill="#E5751F" opacity="0.3"/>
+      <rect x="155" y="162" width="36" height="36" rx="4" fill="#E5751F" opacity="0.3"/>
+      <circle cx="150" cy="225" r="12" fill="#E5751F" opacity="0.6"/>
+      <rect x="22" y="135" width="45" height="120" rx="12" fill="#7a1c3b"/>
+      <rect x="22" y="255" width="45" height="50" rx="10" fill="#6b1833"/>
+      <rect x="233" y="135" width="45" height="120" rx="12" fill="#7a1c3b"/>
+      <rect x="233" y="255" width="45" height="50" rx="10" fill="#6b1833"/>
+      <rect x="90" y="295" width="50" height="130" rx="10" fill="#7a1c3b"/>
+      <rect x="85" y="425" width="55" height="55" rx="10" fill="#6b1833"/>
+      <rect x="160" y="295" width="50" height="130" rx="10" fill="#7a1c3b"/>
+      <rect x="160" y="425" width="55" height="55" rx="10" fill="#6b1833"/>
+    </svg>
+  </section>
+
+  <section id="about">
+    <div class="section-inner">
+      <p class="section-tag reveal">// Mission</p>
+      <h2 class="section-title reveal">Open-Source Robotics,<br/>Built by Students</h2>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>Humanoid Robotics at Virginia Tech is a student-led engineering design team focused on bipedal humanoid robotics. Our vision is to <strong>build open-source bipedal robots</strong> and incentivize greater collegiate interest in humanoid robotics across the United States.</p>
+          <p>Our primary goal is to produce a <strong>tangible improvement to the state of low-end robotics</strong>. By documenting, open-sourcing, and maintaining everything we build, we lower the barrier of entry for students and institutions everywhere.</p>
+          <p>Taking inspiration from UC Berkeley's "Humanoid Lite" and other forming collegiate groups at Rutgers, Purdue, and beyond — we are developing a <strong>Large Robust Open-Source Humanoid Robot</strong>, following the conventional timeline of robotics hardware and software development.</p>
+          <div class="highlight-box">
+            <p>🔓 &nbsp;All robots, code, documentation, and design files produced by this club are fully open-sourced and freely available to the community.</p>
+          </div>
+        </div>
+        <div class="subteams reveal">
+          <div class="subteam">
+            <div class="subteam-header">
+              <div class="subteam-title">Operations</div>
+              <div class="subteam-tag">Non-Technical</div>
+            </div>
+            <div class="subteam-desc">Fundraising, industry relationships, sponsorships, and keeping the organization running at every level.</div>
+          </div>
+          <div class="subteam">
+            <div class="subteam-header">
+              <div class="subteam-title">Electronics</div>
+              <div class="subteam-tag">Hardware</div>
+            </div>
+            <div class="subteam-desc">Sensor integration, inter-system communication, power distribution, and embedded electronics architecture across the full robot stack.</div>
+          </div>
+          <div class="subteam">
+            <div class="subteam-header">
+              <div class="subteam-title">Mechanical — Actuators</div>
+              <div class="subteam-tag">Hardware</div>
+            </div>
+            <div class="subteam-desc">Configuring joints, building custom actuators, and ensuring the robot rotates with precision and durability across all degrees of freedom.</div>
+          </div>
+          <div class="subteam">
+            <div class="subteam-header">
+              <div class="subteam-title">Mechanical — Structures</div>
+              <div class="subteam-tag">Hardware</div>
+            </div>
+            <div class="subteam-desc">Designing and building limbs and links, integrating electronics into structure, selecting materials, and co-designing joints with actuators.</div>
+          </div>
+          <div class="subteam">
+            <div class="subteam-header">
+              <div class="subteam-title">Controls &amp; Software</div>
+              <div class="subteam-tag">Software</div>
+            </div>
+            <div class="subteam-desc">Dynamic locomotion via Sim-to-Real Reinforcement Learning. Policies trained in Isaac Lab simulation and transferred zero-shot to the physical robot — no manual trajectory tuning.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="timeline">
+    <div class="section-inner">
+      <div class="timeline-header">
+        <p class="section-tag reveal">// Progress Log</p>
+        <h2 class="section-title reveal">What We're Building</h2>
+        <p class="reveal" style="color:var(--muted);font-size:0.95rem;line-height:1.75;max-width:580px;margin-top:16px;font-weight:300;">A running record of the club's milestones, active workstreams, and what's coming next. Updated as we make progress.</p>
+      </div>
+      <div class="timeline-track">
+
+        <div class="timeline-entry done reveal">
+          <div class="timeline-meta">
+            <span class="timeline-date">Spring 2025</span>
+            <span class="tl-badge done">&#10003; Complete</span>
+          </div>
+          <div class="timeline-card">
+            <h3>Club Founded &amp; Proposal Approved</h3>
+            <p>Humanoid Robotics at Virginia Tech was officially chartered as a student engineering design team. Leadership structure established, sub-team leads recruited, and the club's open-source mission formally adopted.</p>
+            <div class="timeline-tags">
+              <span class="tl-tag">Founding</span>
+              <span class="tl-tag">Organization</span>
+              <span class="tl-tag">Virginia Tech</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-entry done reveal">
+          <div class="timeline-meta">
+            <span class="timeline-date">Summer 2025</span>
+            <span class="tl-badge done">&#10003; Complete</span>
+          </div>
+          <div class="timeline-card">
+            <h3>Research &amp; Reference Platform Selection</h3>
+            <p>Surveyed existing open-source humanoid efforts — including Berkeley Humanoid Lite, MIT Humanoid, and platforms from Purdue and Rutgers — to define the design direction and scope for our first robot.</p>
+            <div class="timeline-tags">
+              <span class="tl-tag">Research</span>
+              <span class="tl-tag">Benchmarking</span>
+              <span class="tl-tag">Design Direction</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-entry wip reveal">
+          <div class="timeline-meta">
+            <span class="timeline-date">Fall 2025 — Present</span>
+            <span class="tl-badge progress">&#11044; In Progress</span>
+          </div>
+          <div class="timeline-card">
+            <h3>Mechanical Design — Structures &amp; Actuators</h3>
+            <p>Active CAD development of the robot's limbs, joints, and load-bearing structures. Actuator selection and configuration is ongoing, with a focus on quasi-direct drive joints for high torque density and backdriveability.</p>
+            <div class="timeline-tags">
+              <span class="tl-tag">CAD</span>
+              <span class="tl-tag">Actuators</span>
+              <span class="tl-tag">Mechanical</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-label"><span>Design Progress</span><span>45%</span></div>
+              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:45%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-entry wip reveal">
+          <div class="timeline-meta">
+            <span class="timeline-date">Fall 2025 — Present</span>
+            <span class="tl-badge progress">&#11044; In Progress</span>
+          </div>
+          <div class="timeline-card">
+            <h3>Sim-to-Real RL Environment Setup</h3>
+            <p>Building the simulation pipeline in Isaac Lab for training locomotion control policies. Target: zero-shot transfer of trained RL policies to the physical robot with no manual trajectory tuning.</p>
+            <div class="timeline-tags">
+              <span class="tl-tag">Isaac Lab</span>
+              <span class="tl-tag">Reinforcement Learning</span>
+              <span class="tl-tag">Controls</span>
+              <span class="tl-tag">Simulation</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-label"><span>Sim Environment</span><span>30%</span></div>
+              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:30%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-entry wip reveal">
+          <div class="timeline-meta">
+            <span class="timeline-date">Spring 2026 — Present</span>
+            <span class="tl-badge progress">&#11044; In Progress</span>
+          </div>
+          <div class="timeline-card">
+            <h3>Electronics Architecture &amp; PCB Design</h3>
+            <p>Defining the robot's electronics stack: motor controllers, sensor integration, power distribution network, and real-time communication bus between all subsystems.</p>
+            <div class="timeline-tags">
+              <span class="tl-tag">PCB Design</span>
+              <span class="tl-tag">Power Systems</span>
+              <span class="tl-tag">CAN Bus</span>
+              <span class="tl-tag">Electronics</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-label"><span>Architecture Defined</span><span>20%</span></div>
+              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:20%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-entry reveal">
+          <div class="timeline-meta">
+            <span class="timeline-date">Fall 2026</span>
+            <span class="tl-badge upcoming">Planned</span>
+          </div>
+          <div class="timeline-card">
+            <h3>First Physical Prototype Assembly</h3>
+            <p>Integration of all mechanical, electrical, and software subsystems into the first complete physical robot. Target milestone: standing balance and basic stepping before end of semester.</p>
+            <div class="timeline-tags">
+              <span class="tl-tag">Integration</span>
+              <span class="tl-tag">Assembly</span>
+              <span class="tl-tag">First Steps</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-entry reveal">
+          <div class="timeline-meta">
+            <span class="timeline-date">Spring 2027</span>
+            <span class="tl-badge upcoming">Planned</span>
+          </div>
+          <div class="timeline-card">
+            <h3>Open-Source Release &amp; Community Documentation</h3>
+            <p>Full public release of all CAD files, electronics schematics, firmware, RL training code, and build documentation. Any collegiate team should be able to replicate our robot from scratch.</p>
+            <div class="timeline-tags">
+              <span class="tl-tag">Open Source</span>
+              <span class="tl-tag">Documentation</span>
+              <span class="tl-tag">GitHub</span>
+              <span class="tl-tag">Community</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="robot">
+    <div class="section-inner">
+      <p class="section-tag reveal">// Platform</p>
+      <h2 class="section-title reveal">The Robot — Gen 1</h2>
+      <div class="robot-showcase">
+        <div class="robot-diagram reveal">
+          <svg viewBox="0 0 200 360" fill="none" xmlns="http://www.w3.org/2000/svg" width="180">
+            <rect x="65" y="10" width="70" height="64" rx="6" fill="#861F41" opacity="0.9"/>
+            <rect x="78" y="24" width="20" height="10" rx="2" fill="#E5751F"/>
+            <rect x="102" y="24" width="20" height="10" rx="2" fill="#E5751F"/>
+            <rect x="82" y="48" width="36" height="4" rx="2" fill="#E5751F" opacity="0.4"/>
+            <rect x="90" y="74" width="20" height="14" rx="3" fill="#6b1833"/>
+            <rect x="52" y="88" width="96" height="108" rx="8" fill="#861F41" opacity="0.9"/>
+            <rect x="65" y="100" width="70" height="52" rx="4" fill="#6b1833"/>
+            <circle cx="100" cy="142" r="10" fill="#E5751F" opacity="0.5"/>
+            <rect x="16" y="93" width="30" height="80" rx="8" fill="#7a1c3b"/>
+            <rect x="14" y="173" width="32" height="34" rx="7" fill="#6b1833"/>
+            <rect x="154" y="93" width="30" height="80" rx="8" fill="#7a1c3b"/>
+            <rect x="154" y="173" width="32" height="34" rx="7" fill="#6b1833"/>
+            <rect x="62" y="200" width="34" height="88" rx="8" fill="#7a1c3b"/>
+            <rect x="58" y="288" width="38" height="38" rx="7" fill="#6b1833"/>
+            <rect x="104" y="200" width="34" height="88" rx="8" fill="#7a1c3b"/>
+            <rect x="104" y="288" width="38" height="38" rx="7" fill="#6b1833"/>
+            <line x1="8" y1="88" x2="8" y2="326" stroke="#E5751F" stroke-width="0.5" opacity="0.5"/>
+            <line x1="4" y1="88" x2="12" y2="88" stroke="#E5751F" stroke-width="0.5" opacity="0.5"/>
+            <line x1="4" y1="326" x2="12" y2="326" stroke="#E5751F" stroke-width="0.5" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="robot-specs reveal">
+          <div class="spec-row">
+            <span class="spec-key">Target Height</span>
+            <span class="spec-val">~1.5 <span class="unit">m</span></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Mass</span>
+            <span class="spec-val spec-tbd">TBD — In Design</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Joint Architecture</span>
+            <span class="spec-val">Quasi-Direct <span class="unit">Drive</span></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Locomotion Method</span>
+            <span class="spec-val">Sim-to-Real <span class="unit">RL</span></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Sim Environment</span>
+            <span class="spec-val">Isaac <span class="unit">Lab</span></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">License</span>
+            <span class="spec-val">Open <span class="unit">Source</span></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Build Status</span>
+            <span class="spec-val" style="color:var(--orange)">In <span class="unit" style="color:var(--orange)">Development</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="team">
+    <div class="section-inner">
+      <p class="section-tag reveal">// Leadership</p>
+      <h2 class="section-title reveal">Who's Running This</h2>
+      <div class="leadership-layout">
+        <div class="president-card reveal">
+          <div class="member-avatar">AP</div>
+          <div class="member-name">Ashwin Pulla</div>
+          <div class="member-role">Club President</div>
+          <div class="member-dept">Virginia Tech</div>
+          <div class="role-badge">Founding President</div>
+        </div>
+        <div class="org-structure reveal">
+          <div class="org-header">Organizational Structure</div>
+          <div class="org-row">
+            <div class="org-row-dot"></div>
+            <div>
+              <div class="org-row-title">Chief Engineering Officer</div>
+              <div class="org-row-desc">Oversees all technical sub-teams and the overall robot development roadmap.</div>
+            </div>
+          </div>
+          <div class="org-row">
+            <div class="org-row-dot"></div>
+            <div>
+              <div class="org-row-title">Chief Operations Officer</div>
+              <div class="org-row-desc">Manages fundraising, sponsorships, industry relationships, and organizational logistics.</div>
+            </div>
+          </div>
+          <div class="org-row">
+            <div class="org-row-dot"></div>
+            <div>
+              <div class="org-row-title">Sub-Team Leads</div>
+              <div class="org-row-desc">One lead per technical sub-team: Electronics, Structures, Actuators, and Controls &amp; Software. Most positions still open.</div>
+            </div>
+          </div>
+          <p style="margin-top:18px;font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted);line-height:1.7;">
+            This team is growing. If you want a leadership role in a robotics org at the ground floor, reach out now.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="join">
+    <div class="join-inner">
+      <p class="section-tag reveal">// Open Positions</p>
+      <h2 class="section-title reveal">Get In Early.<br/>Build Something Real.</h2>
+      <p class="reveal">We are recruiting across all sub-teams right now. This is early-stage — your contributions will directly shape the robot and the club's direction. No prior humanoid robotics experience required.</p>
+      <div class="open-source-note reveal">
+        <span class="icon">🔓</span>
+        <p>Everything you build here will be open-sourced and used by students across the country. Your work has a direct impact beyond Virginia Tech.</p>
+      </div>
+      <div class="join-tracks reveal">
+        <div class="track">
+          <div class="track-icon">⚙️</div>
+          <div class="track-name">Actuators</div>
+        </div>
+        <div class="track">
+          <div class="track-icon">🏗️</div>
+          <div class="track-name">Structures</div>
+        </div>
+        <div class="track">
+          <div class="track-icon">⚡</div>
+          <div class="track-name">Electronics</div>
+        </div>
+        <div class="track">
+          <div class="track-icon">🧠</div>
+          <div class="track-name">Controls &amp; RL</div>
+        </div>
+        <div class="track">
+          <div class="track-icon">💼</div>
+          <div class="track-name">Operations</div>
+        </div>
+        <div class="track">
+          <div class="track-icon">📐</div>
+          <div class="track-name">Software</div>
+        </div>
+      </div>
+      <div class="reveal">
+        <a href="/cdn-cgi/l/email-protection#4028352d212e2f2924330036346e252435" class="btn-primary">Get In Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">
+      HUMANOID ROBOTICS
+      <span class="sub">AT VIRGINIA TECH</span>
+    </div>
+    <div class="footer-copy">&#169; 2026 Humanoid Robotics at Virginia Tech &middot; Blacksburg, VA</div>
+    <div class="footer-links">
+      <a href="https://www.instagram.com/humanoidroboticsvt/">Instagram</a>
+      <a href="https://www.linkedin.com/company/humanoid-robotics-virginia-tech">LinkedIn</a>
+      <a href="#">GitHub</a>
+      <a href="/cdn-cgi/l/email-protection#2e465b434f4041474a5d6e585a004b4a5b">Contact</a>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Vinyl spin interaction
+    const vinylWrap = document.getElementById('vinylLogo');
+    const vinylEl = vinylWrap.querySelector('.vinyl');
+    let spinDuration = 8; // seconds per revolution (lower = faster)
+    let isDragging = false;
+    let lastX = 0, lastY = 0;
+    let velocity = 0;
+    let angle = 0;
+    let lastTime = null;
+    let rafId = null;
+    let isManual = false;
+
+    // Click to give a boost
+    vinylWrap.addEventListener('click', () => {
+      spinDuration = Math.max(0.6, spinDuration * 0.55);
+      applySpeed();
+      scheduleSlowdown();
+    });
+
+    // Drag to spin
+    vinylWrap.addEventListener('mousedown', (e) => {
+      isDragging = true; isManual = true;
+      lastX = e.clientX; lastY = e.clientY;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - lastX;
+      velocity = dx * 1.8;
+      lastX = e.clientX; lastY = e.clientY;
+    });
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      if (Math.abs(velocity) > 2) {
+        const speed = Math.abs(velocity);
+        spinDuration = Math.max(0.5, 30 / speed);
+        applySpeed();
+        scheduleSlowdown();
+      }
+    });
+
+    // Touch support
+    vinylWrap.addEventListener('touchstart', (e) => {
+      isDragging = true; isManual = true;
+      lastX = e.touches[0].clientX;
+    }, { passive: true });
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const dx = e.touches[0].clientX - lastX;
+      velocity = dx * 1.8;
+      lastX = e.touches[0].clientX;
+    }, { passive: true });
+    document.addEventListener('touchend', () => {
+      isDragging = false;
+      if (Math.abs(velocity) > 2) {
+        spinDuration = Math.max(0.5, 30 / Math.abs(velocity));
+        applySpeed();
+        scheduleSlowdown();
+      }
+    });
+
+    function applySpeed() {
+      vinylEl.style.animationDuration = spinDuration + 's';
+    }
+
+    let slowdownTimer = null;
+    function scheduleSlowdown() {
+      if (slowdownTimer) clearTimeout(slowdownTimer);
+      slowdownTimer = setTimeout(slowdown, 1200);
+    }
+    function slowdown() {
+      spinDuration = spinDuration * 1.35;
+      if (spinDuration >= 8) { spinDuration = 8; }
+      applySpeed();
+      if (spinDuration < 8) slowdownTimer = setTimeout(slowdown, 300);
+    }
     
-<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="csv.html">csv</a><br>
-</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#eeaa77">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
-    
-<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-get_prob"><strong>get_prob</strong></a>(prob_table: list, state: dict, given: dict = None) -&gt; float</dt><dd><tt>Return&nbsp;the&nbsp;probability&nbsp;P(state_i=value_i)&nbsp;with&nbsp;givens&nbsp;state_i=value_i<br>
-:param&nbsp;prob_table:&nbsp;probability&nbsp;table&nbsp;generated&nbsp;from&nbsp;the&nbsp;program<br>
-:param&nbsp;state:&nbsp;{index&nbsp;of&nbsp;state:&nbsp;value}&nbsp;for&nbsp;every&nbsp;value&nbsp;in&nbsp;the&nbsp;goal&nbsp;state<br>
-:param&nbsp;given:&nbsp;{index&nbsp;of&nbsp;state:&nbsp;value}&nbsp;for&nbsp;every&nbsp;value&nbsp;in&nbsp;the&nbsp;given<br>
-:return:&nbsp;the&nbsp;probability&nbsp;of&nbsp;the&nbsp;states&nbsp;with&nbsp;the&nbsp;givens</tt></dd></dl>
- <dl><dt><a name="-p"><strong>p</strong></a>(z: str, g: &lt;built-in function bin&gt;) -&gt; float</dt><dd><tt>Calculates&nbsp;the&nbsp;probability&nbsp;of&nbsp;a&nbsp;node&nbsp;occurring&nbsp;(or&nbsp;its&nbsp;inverse)<br>
-:param&nbsp;z:&nbsp;P(Action=True)<br>
-:param&nbsp;g:&nbsp;Trigger&nbsp;P(~Action);&nbsp;1=P(Action=True);&nbsp;0=P(Action=False)<br>
-:return:&nbsp;fixed&nbsp;probability</tt></dd></dl>
-</td></tr></table><p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#55aa55">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
-    
-<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>a</strong> = '11111'<br>
-<strong>f</strong> = &lt;_io.TextIOWrapper name='inputs.csv' mode='r' encoding='cp1252'&gt;<br>
-<strong>prob_table</strong> = [('00000', 0.9367427006189999), ('00001', 0.009462047481), ('00010', 0.049302247401000004), ('00011', 0.0004980024990000001), ('00100', 2.9910059999999997e-05), ('00101', 6.979013999999998e-05), ('00110', 0.00026919054), ('00111', 0.0006281112599999999), ('01000', 0.00133417449), ('01001', 1.3476510000000001e-05), ('01010', 7.021971e-05), ('01011', 7.0929e-07), ('01100', 1.73826e-05), ('01101', 4.055939999999999e-05), ('01110', 0.00015644340000000003), ('01111', 0.0003650346), ('10000', 5.631714000000005e-05), ('10001', 5.688600000000004e-07), ('10010', 2.9640600000000024e-06), ('10011', 2.994000000000003e-08), ...]<br>
-<strong>probs</strong> = ['0.001', '0.002', '0.95', '0.94', '0.29', '0.001', '0.9', '0.05', '0.70', '0.01']<br>
-<strong>x</strong> = '11111'</td></tr></table>
-</body></html>
+    // Intersection Observer for reveal animations
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
